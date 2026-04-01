@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SignaturePad from '../components/SignaturePad';
 
-const emptyParticipant = { name: '', dob: '', activityDate: '' };
+const emptyParticipant = { name: '', dob: '' };
 
 const t = {
   en: {
@@ -32,8 +32,10 @@ const t = {
     submitting: 'Submitting...',
     propertyPlaceholder: 'apartment complex, management company, facility',
     errParticipant: 'Please enter at least one participant name.',
+    errDob: 'Date of birth is required for all participants.',
     errProperty: 'Property/facility name is required.',
     errParent: 'Parent/Guardian name is required.',
+    errPhone: 'Phone number is required.',
     errSignature: 'Please sign the form before submitting.',
     errNetwork: 'Network error. Please try again.',
     errGeneric: 'Submission failed. Please try again.',
@@ -65,8 +67,10 @@ const t = {
     submitting: 'Enviando...',
     propertyPlaceholder: 'complejo de apartamentos, compañía de administración, instalación',
     errParticipant: 'Por favor ingrese al menos un nombre de participante.',
+    errDob: 'La fecha de nacimiento es obligatoria para todos los participantes.',
     errProperty: 'El nombre de la propiedad/instalación es obligatorio.',
     errParent: 'El nombre del padre/tutor es obligatorio.',
+    errPhone: 'El número de teléfono es obligatorio.',
     errSignature: 'Por favor firme el formulario antes de enviarlo.',
     errNetwork: 'Error de red. Por favor intente de nuevo.',
     errGeneric: 'Error al enviar. Por favor intente de nuevo.',
@@ -112,8 +116,10 @@ export default function ReleaseForm() {
 
     const validParticipants = participants.filter(p => p.name.trim());
     if (validParticipants.length === 0) { setError(txt.errParticipant); return; }
+    if (validParticipants.some(p => !p.dob)) { setError(txt.errDob); return; }
     if (!propertyName.trim()) { setError(txt.errProperty); return; }
     if (!parentName.trim()) { setError(txt.errParent); return; }
+    if (!phone.trim()) { setError(txt.errPhone); return; }
     if (!signature) { setError(txt.errSignature); return; }
 
     setSubmitting(true);
@@ -122,7 +128,7 @@ export default function ReleaseForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          participants: JSON.stringify(validParticipants),
+          participants: JSON.stringify(validParticipants.map(p => ({ ...p, activityDate: today }))),
           property_name: propertyName,
           parent_name: parentName,
           address,
@@ -186,20 +192,17 @@ export default function ReleaseForm() {
                     />
                   </div>
                   <div className="field field-sm">
-                    <label className="form-label">{txt.dob}</label>
+                    <label className="form-label">{txt.dob} <span className="required">*</span></label>
                     <input
                       type="date"
                       value={p.dob}
                       onChange={(e) => updateParticipant(i, 'dob', e.target.value)}
+                      required
                     />
                   </div>
                   <div className="field field-sm">
                     <label className="form-label">{txt.activityDate}</label>
-                    <input
-                      type="date"
-                      value={p.activityDate}
-                      onChange={(e) => updateParticipant(i, 'activityDate', e.target.value)}
-                    />
+                    <input type="text" value={today} readOnly className="readonly" />
                   </div>
                 </div>
                 {participants.length > 1 && (
@@ -252,12 +255,13 @@ export default function ReleaseForm() {
                 />
               </div>
               <div className="field field-sm">
-                <label className="form-label">{txt.phone}</label>
+                <label className="form-label">{txt.phone} <span className="required">*</span></label>
                 <input
                   type="tel"
                   placeholder="(555) 555-5555"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  required
                 />
               </div>
               <div className="field field-sm">
