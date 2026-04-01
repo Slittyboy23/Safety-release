@@ -21,4 +21,26 @@ router.post('/login', (req, res) => {
   res.json({ token, username: user.username });
 });
 
+// Change password
+const { authMiddleware } = require('../middleware/auth');
+
+router.post('/change-password', authMiddleware, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Current and new password required' });
+  }
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: 'New password must be at least 6 characters' });
+  }
+
+  const user = db.prepare('SELECT * FROM admin_users WHERE id = ?').get(req.user.id);
+  if (!user || !bcrypt.compareSync(currentPassword, user.password)) {
+    return res.status(401).json({ error: 'Current password is incorrect' });
+  }
+
+  const hash = bcrypt.hashSync(newPassword, 10);
+  db.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(hash, req.user.id);
+  res.json({ success: true });
+});
+
 module.exports = router;

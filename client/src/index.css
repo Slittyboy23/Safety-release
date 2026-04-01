@@ -371,6 +371,45 @@ input.readonly {
   transition: all 0.2s;
 }
 .btn-logout:hover { border-color: var(--error); color: var(--error); }
+.btn-account {
+  padding: 8px 16px;
+  border: 2px solid var(--accent);
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--accent);
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-account:hover { background: var(--accent); color: var(--primary); }
+.modal-account {
+  max-width: 420px;
+  padding: 30px;
+}
+.modal-account h2 { margin-bottom: 20px; color: var(--primary); }
+.modal-account .field { margin-bottom: 14px; }
+.modal-account .btn-submit { margin-top: 8px; }
+.modal-account .modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-light);
+}
+.form-success {
+  background: #f0fef0;
+  color: var(--success);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  border: 1px solid #b7e4c7;
+}
 
 .search-bar {
   display: flex;

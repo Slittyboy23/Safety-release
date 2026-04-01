@@ -53,6 +53,13 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showAccount, setShowAccount] = useState(false);
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [pwError, setPwError] = useState('');
+  const [pwSuccess, setPwSuccess] = useState('');
+  const [pwLoading, setPwLoading] = useState(false);
   const printRef = useRef(null);
 
   const token = localStorage.getItem('token');
@@ -154,6 +161,34 @@ export default function AdminDashboard() {
     setTimeout(() => { win.print(); }, 500);
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPwError('');
+    setPwSuccess('');
+    if (newPw !== confirmPw) { setPwError('New passwords do not match.'); return; }
+    if (newPw.length < 6) { setPwError('New password must be at least 6 characters.'); return; }
+
+    setPwLoading(true);
+    try {
+      const res = await fetch('/api/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPwSuccess('Password changed successfully.');
+        setCurrentPw(''); setNewPw(''); setConfirmPw('');
+      } else {
+        setPwError(data.error || 'Failed to change password.');
+      }
+    } catch {
+      setPwError('Network error.');
+    } finally {
+      setPwLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     navigate('/admin');
@@ -242,6 +277,7 @@ export default function AdminDashboard() {
         <h1>Waiver Submissions</h1>
         <div className="admin-header-right">
           <span className="submission-count">{total} total</span>
+          <button className="btn-account" onClick={() => { setShowAccount(true); setPwError(''); setPwSuccess(''); }}>Account</button>
           <button className="btn-logout" onClick={logout}>Log Out</button>
         </div>
       </div>
@@ -312,6 +348,35 @@ export default function AdminDashboard() {
               <button className="modal-close" onClick={() => setSelected(null)}>&times;</button>
             </div>
             {renderWaiverDoc(selected)}
+          </div>
+        </div>
+      )}
+
+      {/* Account Modal */}
+      {showAccount && (
+        <div className="modal-overlay" onClick={() => setShowAccount(false)}>
+          <div className="modal modal-account" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowAccount(false)}>&times;</button>
+            <h2>Account Settings</h2>
+            <form onSubmit={handleChangePassword}>
+              <div className="field">
+                <label className="form-label">Current Password</label>
+                <input type="password" value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} required />
+              </div>
+              <div className="field">
+                <label className="form-label">New Password</label>
+                <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} required />
+              </div>
+              <div className="field">
+                <label className="form-label">Confirm New Password</label>
+                <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} required />
+              </div>
+              {pwError && <div className="form-error">{pwError}</div>}
+              {pwSuccess && <div className="form-success">{pwSuccess}</div>}
+              <button type="submit" className="btn-submit" disabled={pwLoading}>
+                {pwLoading ? 'Changing...' : 'Change Password'}
+              </button>
+            </form>
           </div>
         </div>
       )}
