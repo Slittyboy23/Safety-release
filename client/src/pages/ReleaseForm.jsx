@@ -126,6 +126,7 @@ export default function ReleaseForm() {
           phone,
           signature,
           date_signed: today,
+          language: lang,
         }),
       });
       const data = await res.json();

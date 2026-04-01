@@ -6,15 +6,15 @@ const router = express.Router();
 
 // Public — submit a form
 router.post('/', (req, res) => {
-  const { participants, property_name, parent_name, address, phone, signature, date_signed } = req.body;
+  const { participants, property_name, parent_name, address, phone, signature, date_signed, language } = req.body;
 
   if (!parent_name || !signature || !participants) {
     return res.status(400).json({ error: 'Name, participants, and signature are required' });
   }
 
   const result = db.prepare(`
-    INSERT INTO submissions (participants, property_name, parent_name, address, phone, signature, date_signed)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO submissions (participants, property_name, parent_name, address, phone, signature, date_signed, language)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     typeof participants === 'string' ? participants : JSON.stringify(participants),
     property_name || null,
@@ -22,7 +22,8 @@ router.post('/', (req, res) => {
     address || null,
     phone || null,
     signature,
-    date_signed
+    date_signed,
+    language || 'en'
   );
 
   res.json({ success: true, id: result.lastInsertRowid });

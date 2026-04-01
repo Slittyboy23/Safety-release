@@ -28,6 +28,13 @@ db.exec(`
   );
 `);
 
+// Migration: add language column
+const cols = db.prepare("PRAGMA table_info(submissions)").all().map(c => c.name);
+if (!cols.includes('language')) {
+  db.exec("ALTER TABLE submissions ADD COLUMN language TEXT DEFAULT 'en'");
+  console.log('Migration: added language column');
+}
+
 // Seed default admin if none exists
 const adminCount = db.prepare('SELECT COUNT(*) as count FROM admin_users').get();
 if (adminCount.count === 0) {
