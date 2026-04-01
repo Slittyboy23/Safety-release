@@ -17,7 +17,7 @@ const t = {
     addParticipant: '+ Add Another Participant',
     waiverTitle: 'WAIVER, RELEASE AND CONSENT',
     waiverP1: (input) => (
-      <>In exchange for allowing us to participate in bounce house activities on the premises, I, for myself, my children, and any participants listed above, hereby waive, release and discharge <strong>Apollo Towing, LLC</strong> and {input} from any and all claims for damages for personal injury, death or property damage which may result to me, my children, or any participant listed above, as a result of or arising from any bounce house activities or participation in such activities on the premises.</>
+      <>In exchange for allowing us to participate in bounce house activities on the premises, I, for myself, my children, and any participants listed above, hereby waive, release and discharge <strong>Apollo Towing, LLC</strong> and {input} <span className="required">*</span> from any and all claims for damages for personal injury, death or property damage which may result to me, my children, or any participant listed above, as a result of or arising from any bounce house activities or participation in such activities on the premises.</>
     ),
     waiverP2: 'It is understood that these bounce house activities involve an element of risk and danger of accidents and injuries, and knowing those risks I hereby assume those risks on behalf of myself, my children, and any participant listed above. Adult supervision of participants by me is required at all times.',
     acknowledgment: 'I HAVE CAREFULLY READ THIS WAIVER OF LIABILITY, RELEASE AND CONSENT (WAIVER) FOR BOUNCE HOUSE ACTIVITIES AND FULLY UNDERSTAND ITS CONTENTS. I SIGN THIS WAIVER VOLUNTARILY.',
@@ -32,6 +32,7 @@ const t = {
     submitting: 'Submitting...',
     propertyPlaceholder: 'apartment complex, management company, facility',
     errParticipant: 'Please enter at least one participant name.',
+    errProperty: 'Property/facility name is required.',
     errParent: 'Parent/Guardian name is required.',
     errSignature: 'Please sign the form before submitting.',
     errNetwork: 'Network error. Please try again.',
@@ -49,7 +50,7 @@ const t = {
     addParticipant: '+ Agregar Otro Participante',
     waiverTitle: 'EXENCIÓN, LIBERACIÓN Y CONSENTIMIENTO',
     waiverP1: (input) => (
-      <>A cambio de permitirnos participar en actividades de casa de brinco en las instalaciones, yo, por mí mismo/a, mis hijos y cualquier participante mencionado anteriormente, por la presente renuncio, libero y descargo a <strong>Apollo Towing, LLC</strong> y {input} de todos y cada uno de los reclamos por daños por lesiones personales, muerte o daños a la propiedad que puedan resultar a mí, mis hijos o cualquier participante mencionado anteriormente, como resultado de o derivado de cualquier actividad de casa de brinco o participación en dichas actividades en las instalaciones.</>
+      <>A cambio de permitirnos participar en actividades de casa de brinco en las instalaciones, yo, por mí mismo/a, mis hijos y cualquier participante mencionado anteriormente, por la presente renuncio, libero y descargo a <strong>Apollo Towing, LLC</strong> y {input} <span className="required">*</span> de todos y cada uno de los reclamos por daños por lesiones personales, muerte o daños a la propiedad que puedan resultar a mí, mis hijos o cualquier participante mencionado anteriormente, como resultado de o derivado de cualquier actividad de casa de brinco o participación en dichas actividades en las instalaciones.</>
     ),
     waiverP2: 'Se entiende que estas actividades de casa de brinco involucran un elemento de riesgo y peligro de accidentes y lesiones, y conociendo esos riesgos, por la presente asumo esos riesgos en nombre de mí mismo/a, mis hijos y cualquier participante mencionado anteriormente. Se requiere la supervisión de un adulto de los participantes en todo momento.',
     acknowledgment: 'HE LEÍDO CUIDADOSAMENTE ESTA EXENCIÓN DE RESPONSABILIDAD, LIBERACIÓN Y CONSENTIMIENTO (EXENCIÓN) PARA ACTIVIDADES DE CASA DE BRINCO Y COMPRENDO COMPLETAMENTE SU CONTENIDO. FIRMO ESTA EXENCIÓN VOLUNTARIAMENTE.',
@@ -64,6 +65,7 @@ const t = {
     submitting: 'Enviando...',
     propertyPlaceholder: 'complejo de apartamentos, compañía de administración, instalación',
     errParticipant: 'Por favor ingrese al menos un nombre de participante.',
+    errProperty: 'El nombre de la propiedad/instalación es obligatorio.',
     errParent: 'El nombre del padre/tutor es obligatorio.',
     errSignature: 'Por favor firme el formulario antes de enviarlo.',
     errNetwork: 'Error de red. Por favor intente de nuevo.',
@@ -84,7 +86,7 @@ export default function ReleaseForm() {
   const [error, setError] = useState('');
 
   const txt = t[lang];
-  const today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+  const today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', timeZone: 'America/Chicago' });
 
   const updateParticipant = (index, field, value) => {
     const updated = [...participants];
@@ -110,6 +112,7 @@ export default function ReleaseForm() {
 
     const validParticipants = participants.filter(p => p.name.trim());
     if (validParticipants.length === 0) { setError(txt.errParticipant); return; }
+    if (!propertyName.trim()) { setError(txt.errProperty); return; }
     if (!parentName.trim()) { setError(txt.errParent); return; }
     if (!signature) { setError(txt.errSignature); return; }
 

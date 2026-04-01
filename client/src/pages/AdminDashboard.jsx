@@ -106,8 +106,8 @@ export default function AdminDashboard() {
 
   const formatDate = (d) => {
     if (!d) return '-';
-    return new Date(d.replace(' ', 'T')).toLocaleString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+    return new Date(d.replace(' ', 'T') + 'Z').toLocaleString('en-US', {
+      month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago'
     });
   };
 
