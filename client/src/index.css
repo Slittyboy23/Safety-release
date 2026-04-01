@@ -46,6 +46,41 @@ body {
   color: white;
   text-align: center;
   padding: 40px 30px;
+  position: relative;
+}
+.form-logo {
+  max-width: 280px;
+  height: auto;
+  margin-bottom: 24px;
+}
+.lang-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 20px;
+}
+.lang-toggle button {
+  padding: 8px 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.lang-toggle button:first-child {
+  border-radius: 6px 0 0 6px;
+  border-right: none;
+}
+.lang-toggle button:last-child {
+  border-radius: 0 6px 6px 0;
+}
+.lang-toggle button.active {
+  background: var(--accent);
+  color: var(--primary);
+  border-color: var(--accent);
 }
 .form-header h1 {
   font-size: 1.5rem;
@@ -281,6 +316,12 @@ input.readonly {
   justify-content: center;
   font-size: 2.5rem;
   margin-bottom: 20px;
+}
+.thankyou-logo {
+  max-width: 220px;
+  height: auto;
+  margin-bottom: 20px;
+  filter: brightness(0);
 }
 .thankyou-container h1 { font-size: 1.5rem; margin-bottom: 12px; }
 .thankyou-container p { color: var(--text-light); margin-bottom: 8px; }
