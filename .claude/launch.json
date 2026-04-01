@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "safety-release",
+      "runtimeExecutable": "/Users/mattbellitti/.local/node/bin/npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "cwd": "/Users/mattbellitti/Desktop/Claude/safety-release"
+    }
+  ]
+}
